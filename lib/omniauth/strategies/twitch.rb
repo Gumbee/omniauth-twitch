@@ -20,11 +20,12 @@ module OmniAuth
 
       option :authorize_options, [:scope]
 
-      def request_phasee
-        redirect client.auth_code.
-          authorize_url({ redirect_uri: callback_url }.merge(authorize_params)).
-          gsub(/%2[b,B]/, "+").
-          gsub(/%3[a,A]/, ":")
+      def request_phase
+        redirect client.auth_code
+          .authorize_url({ redirect_uri: callback_url }.merge(authorize_params))
+          .gsub(/%2[b,B]/, "+")
+          .gsub(/%3[a,A]/, ":")
+          .gsub(/%2[c,C]\+/, "%20")
       end
 
       credentials do
@@ -59,8 +60,8 @@ module OmniAuth
       def raw_info
         @raw_info ||=
           access_token.get("https://api.twitch.tv/helix/users",
-            headers: { "Client-ID" => client.id }).parsed.
-          fetch("data").fetch(0)
+            headers: { "Client-ID" => client.id }).parsed
+          .fetch("data").fetch(0)
       end
 
       def build_access_token
